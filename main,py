@@ -1,0 +1,28 @@
+from fastapi import FastAPI, HTTPException, Request
+from pydantic import BaseModel
+from typing import List
+
+app = FastAPI()
+
+# Base de datos simulada en memoria
+transportes_db = []
+contador_id = 1
+
+# ✅ Modelo de datos
+class Transporte(BaseModel):
+    nombre: str
+    capacidad: int
+    tipo: str
+
+@app.put("/transporte/{id}")
+def update_transporte(id: int, transporte: Transporte):
+    global transportes_db
+
+    for i, t in enumerate(transportes_db):
+        if t["id"] == id:
+            transportes_db[i] = {"id": id, **transporte.dict()}
+            return {"message": "Transporte actualizado", "data": transportes_db[i]}
+
+    raise HTTPException(status_code=404, detail="Transporte no encontrado")
+
+
