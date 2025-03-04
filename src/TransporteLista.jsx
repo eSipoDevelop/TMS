@@ -1,6 +1,9 @@
 import React, { useContext, useState, useEffect } from "react";
 import { TransporteContext } from "./TransporteContext";
 import { toast } from "sonner"; 
+import Papa from "papaparse"; // Para exportar CSV
+import { utils, writeFile } from "xlsx"; // Para exportar Excel
+import { saveAs } from "file-saver"; // Para descargar archivos
 
 function TransporteLista() {
     const { transportes, handleEditar, handleEliminar } = useContext(TransporteContext);
@@ -63,9 +66,45 @@ function TransporteLista() {
         }
     };
 
+ // ✅ Función para exportar como CSV
+ const exportarCSV = () => {
+    const csv = Papa.unparse(transportes);
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+    saveAs(blob, "transportes.csv");
+    toast.success("📥 CSV descargado con éxito");
+};
+
+// ✅ Función para exportar como Excel
+const exportarExcel = () => {
+    const ws = utils.json_to_sheet(transportes);
+    const wb = utils.book_new();
+    utils.book_append_sheet(wb, ws, "Transportes");
+    writeFile(wb, "transportes.xlsx");
+    toast.success("📥 Excel descargado con éxito");
+};
+
+
+
     return (
         <div className="bg-white shadow-lg rounded-lg p-6 w-full max-w-4xl transition-all">
             <h2 className="text-xl font-semibold text-gray-700 flex items-center mb-4">
+                {/* 🔘 Botones de exportación */}
+            <div className="flex gap-4 mb-4">
+                <button
+                    onClick={exportarCSV}
+                    className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition-all"
+                >
+                    📄 Exportar CSV
+                </button>
+                <button
+                    onClick={exportarExcel}
+                    className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-all"
+                >
+                    📊 Exportar Excel
+                </button>
+            </div>
+               
+               
                 📋 Lista de Transportes
             </h2>
 
