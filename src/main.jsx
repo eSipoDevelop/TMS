@@ -1,19 +1,19 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import App from "./App.jsx";
-import { TransporteProvider } from "./TransporteContext.jsx";
+import App from "./App";
+import { BrowserRouter } from "react-router-dom";
+import { TransporteProvider } from "./TransporteContext";
+import { AuthProvider } from "./AuthContext"; // Nuevo
+import "./index.css";
 
-const rootElement = document.getElementById("root");
-
-// 🚀 Debug: Si `rootElement` es `null`, mostramos un mensaje en consola
-if (!rootElement) {
-  console.error("⚠️ ERROR: No se encontró el elemento con id='root'. Verifica index.html.");
-} else {
-  ReactDOM.createRoot(rootElement).render(
-    <React.StrictMode>
-      <TransporteProvider>
-        <App />
-      </TransporteProvider>
-    </React.StrictMode>
-  );
-}
+ReactDOM.createRoot(document.getElementById("root")).render(
+  <React.StrictMode>
+    <BrowserRouter>
+      <AuthProvider>
+        <TransporteProvider>
+          <App />
+        </TransporteProvider>
+      </AuthProvider>
+    </BrowserRouter>
+  </React.StrictMode>
+);
